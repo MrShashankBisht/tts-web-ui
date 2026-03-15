@@ -1,71 +1,127 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
-<head><meta charset="utf-8">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Kokoro TTS Studio</title>
 
 <style>
 
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+}
+
 body{
-font-family:Arial;
-background:#f2f4f7;
-padding:40px;
+font-family: "Segoe UI", Arial, sans-serif;
+background: linear-gradient(135deg,#4f7cff,#7b9dff);
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
 }
 
 .container{
+width:100%;
 max-width:900px;
-margin:auto;
-background:white;
+background:rgba(255,255,255,0.95);
+backdrop-filter: blur(10px);
 padding:30px;
-border-radius:12px;
-box-shadow:0 10px 25px rgba(0,0,0,0.08);
+border-radius:16px;
+box-shadow:0 15px 40px rgba(0,0,0,0.2);
 }
 
 h2{
-margin-bottom:10px;
+text-align:center;
+margin-bottom:20px;
+color:#333;
 }
 
 textarea{
 width:100%;
-padding:12px;
+padding:14px;
 font-size:16px;
-border-radius:6px;
-border:1px solid #ccc;
+border-radius:8px;
+border:1px solid #ddd;
+resize:none;
+transition:0.3s;
 }
 
-.controls{
-margin-top:20px;
-}
-
-button{
-padding:10px 18px;
-margin-right:10px;
-font-size:15px;
-cursor:pointer;
-border:none;
-border-radius:6px;
-background:#4a7cff;
-color:white;
-}
-
-button:hover{
-background:#345fd1;
+textarea:focus{
+outline:none;
+border-color:#4a7cff;
+box-shadow:0 0 5px rgba(74,124,255,0.4);
 }
 
 .stats{
 margin-top:10px;
+font-size:14px;
 color:#555;
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+}
+
+.controls{
+margin-top:20px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+.control-group{
+display:flex;
+flex-direction:column;
 }
 
 label{
-font-weight:bold;
+font-weight:600;
+margin-bottom:5px;
+}
+
+select,input[type=range]{
+padding:8px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+.buttons{
+grid-column:1 / -1;
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-top:10px;
+}
+
+button{
+padding:12px 18px;
+font-size:14px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+background:#4a7cff;
+color:white;
+transition:0.25s;
+}
+
+button:hover{
+background:#345fd1;
+transform:translateY(-2px);
+}
+
+button:disabled{
+background:#aaa;
+cursor:not-allowed;
 }
 
 #progress{
 width:100%;
 height:14px;
-margin-top:15px;
+margin-top:20px;
 display:none;
 }
 
