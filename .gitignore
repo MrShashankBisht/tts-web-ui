@@ -1,0 +1,72 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+kokoro_env/
+Kokoro-82M/
+
+
+# Python packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# HuggingFace cache
+.cache/
+huggingface/
+hf_home/
+
+# Torch / model weights
+*.pt
+*.pth
+*.bin
+*.safetensors
+
+# Audio output
+*.wav
+*.mp3
+*.flac
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# Environment variables
+.env
+
+# Gradio temp
+gradio/
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Ninja
+.ninja_log
+.ninja_deps

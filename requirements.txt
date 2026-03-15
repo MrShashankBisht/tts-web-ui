@@ -1,0 +1,32 @@
+torch
+torchaudio
+transformers
+accelerate
+
+numpy
+scipy
+soundfile
+pydub
+
+sentencepiece
+spacy
+Cython
+
+fastapi
+starlette
+pydantic
+uvicorn
+python-multipart
+
+tqdm
+gradio
+
+cmake
+ninja
+
+# install kokoro separately
+# pip install kokoro --no-build-isolation
+
+
+# to start the server you need to run the following command in the terminal
+# uvicorn server:app --host 0.0.0.0 --port 8000
