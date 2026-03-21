@@ -130,48 +130,94 @@ width:100%;
 margin-top:20px;
 }
 
-select,input[type=range]{
-margin-top:5px;
+@media(max-width:600px){
+
+.controls{
+grid-template-columns:1fr;
+}
+
+.buttons{
+flex-direction:column;
+}
+
+button{
+width:100%;
+}
+
+}
+
+.loader-wrapper{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.4);
+align-items:center;
+justify-content:center;
+flex-direction:column;
+z-index:1000;
+color:white;
+font-size:18px;
+}
+
+.spinner{
+width:60px;
+height:60px;
+border:6px solid rgba(255,255,255,0.3);
+border-top:6px solid white;
+border-radius:50%;
+animation:spin 1s linear infinite;
+margin-bottom:15px;
+}
+
+@keyframes spin{
+0%{transform:rotate(0deg);}
+100%{transform:rotate(360deg);}
 }
 
 </style>
-
 </head>
 
 <body>
 
 <div class="container">
 
-<h2>Kokoro TTS Studio</h2>
+<h2>🎙 Kokoro TTS Studio</h2>
 
-<textarea id="text" rows="10" placeholder="Write narration here..."></textarea>
+<textarea id="text" rows="8" placeholder="Write narration here..."></textarea>
 
 <div class="stats">
-Words: <span id="words">0</span> |
-Characters: <span id="chars">0</span> |
-Estimated Duration: <span id="duration">0</span> sec
+<span>Words: <b id="words">0</b></span>
+<span>Characters: <b id="chars">0</b></span>
+<span>Estimated Duration: <b id="duration">0</b> sec</span>
 </div>
 
 <div class="controls">
 
-<br>
-
-<label>Voice</label><br>
+<div class="control-group">
+<label>Voice</label>
 <select id="voice"></select>
 <button onclick="testVoice()">Test Voice</button>
+</div>
 
-<br><br>
-
-<label>Speed</label><br>
+<div class="control-group">
+<label>Speed: <span id="speedValue">1</span></label>
 <input type="range" id="speed" min="0.5" max="2" step="0.1" value="1">
-<span id="speedValue">1</span>
+</div>
 
-<br><br>
-
+<div class="buttons">
 <button onclick="generate()" id="generateBtn">Generate</button>
 <button onclick="clearText()">Clear</button>
 <button onclick="downloadAudio()">Download</button>
+</div>
 
+</div>
+
+<div id="loader" class="loader-wrapper">
+    <div class="spinner"></div>
+    <p>Generating audio...</p>
 </div>
 
 <progress id="progress" value="0" max="100"></progress>
@@ -188,21 +234,27 @@ const textarea = document.getElementById("text")
 const words = document.getElementById("words")
 const chars = document.getElementById("chars")
 const duration = document.getElementById("duration")
-const baseURL = "https://a9e5-103-165-103-38.ngrok-free.app"
+const baseURL = "https://c468-103-165-103-38.ngrok-free.app "
 
 // load voices from API
 
-async function loadVoices(){
+async function loadVoices() {
 
     const res = await fetch(`${baseURL}/voices`)
     const data = await res.json()
 
     const voiceSelect = document.getElementById("voice")
 
-    data.forEach(v=>{
+    voiceSelect.innerHTML = "" // clear before adding
+
+    data.forEach(v => {
         const option = document.createElement("option")
-        option.value=v
-        option.text=v
+
+        option.value = v.id
+
+        // 🔥 THIS IS THE IMPORTANT PART
+        option.text = `${v.name} (${v.gender}) - ${v.language}`
+
         voiceSelect.appendChild(option)
     })
 }
@@ -259,6 +311,8 @@ async function generate(){
         return
     }
 
+    showLoader("Generating audio...")
+
     const progress = document.getElementById("progress")
     const btn = document.getElementById("generateBtn")
 
@@ -293,6 +347,8 @@ async function generate(){
     },1000)
 
     btn.disabled=false
+
+    hideLoader()
 }
 
 // test voice
@@ -300,6 +356,8 @@ async function generate(){
 async function testVoice(){
 
     const voice = document.getElementById("voice").value
+
+    showLoader("Testing voice...")
 
     const res = await fetch(`${baseURL}/voice-sample`,{
         method:"POST",
@@ -312,6 +370,8 @@ async function testVoice(){
     const url = URL.createObjectURL(blob)
 
     document.getElementById("player").src = url
+    hideLoader()
+    
 }
 
 // clear text
@@ -336,6 +396,17 @@ function downloadAudio(){
     a.href=audioURL
     a.download="kokoro_audio.wav"
     a.click()
+}
+
+const loader = document.getElementById("loader")
+
+function showLoader(text="Processing..."){
+    loader.style.display="flex"
+    loader.querySelector("p").innerText=text
+}
+
+function hideLoader(){
+    loader.style.display="none"
 }
 
 </script>

@@ -24,6 +24,8 @@ gradio
 cmake
 ninja
 
+kokoro
+
 # install kokoro separately
 # pip install kokoro --no-build-isolation
 

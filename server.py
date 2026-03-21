@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+import json
 import numpy as np
 import soundfile as sf
 import tempfile
@@ -87,12 +88,10 @@ def generate(req: TTSRequest):
 
 @app.get("/voices")
 def get_voices():
-    return [
-        "af_heart",
-        "af_alloy",
-        "af_sarah",
-        "af_nicole"
-    ]
+    # ✅ Load once at startup
+    with open("voices.json", "r", encoding="utf-8") as f:
+        voices = json.load(f)
+    return voices
 
 @app.post("/voice-sample")
 def voice_sample(req: VoiceSampleRequest):
