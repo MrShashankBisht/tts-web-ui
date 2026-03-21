@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>YouTube Downloader</title>
+<style>
+body{
+    font-family:Arial;
+    background:#111;
+    color:white;
+    padding:30px;
+}
+
+.container{
+    max-width:800px;
+    margin:auto;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin-bottom:10px;
+}
+
+button{
+    padding:10px 15px;
+    margin:5px;
+    cursor:pointer;
+}
+
+.format{
+    background:#222;
+    padding:10px;
+    margin:5px 0;
+    border-radius:6px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>🎬 YouTube Downloader</h2>
+
+<input type="text" id="url" placeholder="Paste YouTube URL">
+
+<button onclick="getFormats()">Get Formats</button>
+<button onclick="downloadAudio()">Download Audio</button>
+
+<div id="formats"></div>
+
+</div>
+
+<script>
+
+const baseURL = "https://7c1e-103-165-103-38.ngrok-free.app"
+
+async function getFormats(){
+
+    const url = document.getElementById("url").value
+
+    const res = await fetch(`${baseURL}/yt/formats`,{
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body:JSON.stringify({url})
+    })
+
+    const data = await res.json()
+
+    const container = document.getElementById("formats")
+    container.innerHTML = `<h3>${data.title}</h3>`
+
+    data.formats.forEach(f=>{
+
+        const div = document.createElement("div")
+        div.className="format"
+
+        div.innerHTML = `
+        <b>${f.ext}</b> | ${f.resolution || "audio"} 
+        <button onclick="download('${url}','${f.format_id}')">Download</button>
+        `
+
+        container.appendChild(div)
+    })
+}
+
+function download(url, format_id){
+    window.open(`${baseURL}/yt/download?url=${url}&format_id=${format_id}`)
+}
+
+function downloadAudio(){
+
+    const url = document.getElementById("url").value
+
+    fetch(`${baseURL}/yt/audio`,{
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body:JSON.stringify({url})
+    })
+    .then(res=>res.blob())
+    .then(blob=>{
+        const a = document.createElement("a")
+        a.href = URL.createObjectURL(blob)
+        a.download = "audio.mp3"
+        a.click()
+    })
+}
+
+</script>
+
+</body>
+</html>

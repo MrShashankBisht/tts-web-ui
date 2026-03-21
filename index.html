@@ -186,6 +186,16 @@ margin-bottom:15px;
 
 <h2>🎙 Kokoro TTS Studio</h2>
 
+<div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+    <a href="index.html">🎙 TTS</a>
+    <a href="youtube.html">📥 YouTube Downloader</a>
+</div>
+
+<div style="margin-bottom:15px; display:flex; gap:10px; flex-wrap:wrap;">
+    <input type="text" id="ytUrl" placeholder="Paste YouTube URL..." style="flex:1; padding:10px; border-radius:8px; border:1px solid #ccc;">
+    
+    <button onclick="processYouTube()">🎬 Auto Process</button>
+</div>
 <textarea id="text" rows="8" placeholder="Write narration here..."></textarea>
 
 <div class="stats">
@@ -407,6 +417,56 @@ function showLoader(text="Processing..."){
 
 function hideLoader(){
     loader.style.display="none"
+}
+
+async function processYouTube(){
+
+    const url = document.getElementById("ytUrl").value
+    const voice = document.getElementById("voice").value
+    const speed = parseFloat(speedSlider.value)
+
+    if(!url){
+        alert("Enter YouTube URL")
+        return
+    }
+
+    showLoader("Processing YouTube (Whisper + AI Voice)...")
+
+    try{
+
+        const res = await fetch(`${baseURL}/yt/process`,{
+            method:"POST",
+            headers:{ "Content-Type":"application/json" },
+            body:JSON.stringify({
+                url: url,
+                voice: voice,
+                speed: speed
+            })
+        })
+
+        const data = await res.json()
+
+        // 🔥 SET TEXT INTO TEXTAREA
+        textarea.value = data.text
+
+        // 🔥 UPDATE COUNTS (IMPORTANT)
+        textarea.dispatchEvent(new Event("input"))
+
+        // 🔥 PLAY AUDIO
+        const audioBlob = new Blob(
+            [Uint8Array.from(atob(data.audio), c => c.charCodeAt(0))],
+            { type: "audio/wav" }
+        )
+
+        audioURL = URL.createObjectURL(audioBlob)
+        document.getElementById("player").src = audioURL
+
+    }catch(e){
+        alert("Error processing video")
+        console.error(e)
+    }
+
+    hideLoader()
 }
 
 </script>
